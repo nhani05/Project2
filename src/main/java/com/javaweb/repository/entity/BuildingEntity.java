@@ -1,8 +1,8 @@
 package com.javaweb.repository.entity;
 
 public class BuildingEntity {
-	private String name, street, ward;
-	private Integer numberOfBasement;
+	private String name,  street, ward, direction;
+	private Integer floorArea, numberOfBasement, districtId, level;
 	public String getName() {
 		return name;
 	}

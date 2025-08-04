@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.javaweb.model.BuildingDTO;
+import com.javaweb.model.BuildingSearchRequestDTO;
 import com.javaweb.repository.BuildingRepository;
 import com.javaweb.repository.entity.BuildingEntity;
 import com.javaweb.service.BuildingService;
@@ -17,9 +18,9 @@ public class BuildingServiceImpl implements BuildingService{
 	private BuildingRepository buildingRepository;
 	
 	@Override
-	public List<BuildingDTO> findAllBuildings(String name, Long districtId) {
+	public List<BuildingDTO> findAllBuildings(BuildingSearchRequestDTO requestClient) {
 		// TODO Auto-generated method stub
-		List<BuildingEntity> buildingEntities = buildingRepository.findAllBuildings(name, districtId);
+		List<BuildingEntity> buildingEntities = buildingRepository.findAllBuildings(requestClient);
 		List<BuildingDTO> result = new ArrayList<BuildingDTO>();
 		for(BuildingEntity building : buildingEntities) {
 			BuildingDTO buildingDto = new BuildingDTO();

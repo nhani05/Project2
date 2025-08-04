@@ -10,6 +10,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
+import com.javaweb.model.BuildingSearchRequestDTO;
 import com.javaweb.repository.*;
 import com.javaweb.repository.entity.BuildingEntity;
 
@@ -20,20 +21,62 @@ public class BuildingRepositoryImpl implements BuildingRepository {
 	private static final String PASS_WORD = "123456";
 	
 	
-	public String getBuildingSearchQuery(String name, Long districtId) {
-		StringBuilder sql = new StringBuilder("SELECT * FROM building WHERE 1 = 1");
+	public String getBuildingSearchQuery(BuildingSearchRequestDTO requestClient) {
+		StringBuilder sql = new StringBuilder("SELECT * FROM building AS b WHERE 1 = 1");
 		
-		if(name != null && !name.equals("")) {
-			sql.append(" AND name LIKE '%" + name + "%'");
+		sql.append("\nINNER JOIN rentarea AS r ON rentarea.buildingid = builiding.id"
+				+ "\nINNER JOIN assignmentbuilding AS a ON assignmentbuilding.buildingid = building.id");
+		if(requestClient.getBuildingName() != null && !requestClient.getBuildingName().equals("")) {
+			sql.append(" AND b.name LIKE '%" + requestClient.getBuildingName() + "%'");
 		}
 		
-		if(districtId != null) {
-			sql.append(" AND districtid = " + districtId.toString());
+		if(requestClient.getFloorArea() != null)
+			sql.append(" AND b.floorarea = " + requestClient.getFloorArea().toString());
+		
+		if(requestClient.getDistrictId() != null) {
+			sql.append(" AND b.districtid = " + requestClient.getDistrictId().toString());
+		}
+		if(requestClient.getWard() != null && ! requestClient.getWard().equals(""))
+			sql.append(" AND b.street LIKE '%" + requestClient.getWard() + "%'");
+//		if(requestClient.getBuildingName() != null && !requestClient.getBuildingName().equals("")) {
+//			sql.append(" AND name LIKE '%" + requestClient.getBuildingName() + "%'");
+//		}
+		
+		if(requestClient.getNumberOfBasement() != null) {
+			sql.append(" AND b.numberofbasement = " + requestClient.getNumberOfBasement().toString());
+		}
+		if(requestClient.getDirection() != null) {
+			sql.append(" AND b.direction = " + requestClient.getDirection());
+		}
+		if(requestClient.getLevel() != null) {
+			sql.append(" AND b.level = " + requestClient.getLevel().toString());
+		}
+		if(requestClient.getLowerRentalArea() != null) {
+			sql.append(" AND r.value >= " + requestClient.getLowerRentalArea().toString());
+		}
+		if(requestClient.getUpperRentalArea() != null) {
+			sql.append(" AND r.value <= " + requestClient.getUpperRentalArea().toString());
+		}
+		
+		if(requestClient.getLowerRentalPrice() != null) {
+			sql.append(" AND b.rentprice >= " + requestClient.getLowerRentalPrice().toString());
+		}
+		if(requestClient.getUpperRentalPrice() != null) {
+			sql.append(" AND b.rentprice <= " + requestClient.getUpperRentalPrice());
+		}
+		if(requestClient.getManagerName() != null && !requestClient.getManagerName().equals("")) {
+			sql.append(" AND b.managername LIKE '%" + requestClient.getManagerName() + "%'");
+		}
+		if(requestClient.getManagerPhoneNumber() != null && !requestClient.getManagerPhoneNumber().equals("")) {
+			sql.append(" AND b.managerphonenumber = " + requestClient.getManagerPhoneNumber());
+		}
+		if(requestClient.getStaffId() != null) {
+			sql.append(" AND a.staffid = " + requestClient.getStaffId().toString());
 		}
 		return sql.toString();
 	}
 	@Override
-	public List<BuildingEntity> findAllBuildings(String name, Long districtId) {
+	public List<BuildingEntity> findAllBuildings(BuildingSearchRequestDTO requestClient) {
 		List<BuildingEntity> result = new ArrayList<BuildingEntity>();
 		try{
 			Connection con = DriverManager.getConnection(URL, USER_NAME, PASS_WORD);
