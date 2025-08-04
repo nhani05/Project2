@@ -11,6 +11,8 @@ import com.javaweb.customexception.FieldRequiredException;
 import com.javaweb.model.BuildingDTO;
 import com.javaweb.model.ErrorResponseDTO;
 
+import ch.qos.logback.core.recovery.ResilientSyslogOutputStream;
+
 public class Test {
 //	//	public static Connection getConnections() throws ClassNotFoundException, SQLException {
 //	//	Class.forName("com.mysql.jdbc.Driver");
@@ -97,6 +99,7 @@ public class Test {
 	public static void main(String[] args) {
 		try {
 			System.out.println(5 / 0);
+			System.out.println("abcdss");
 		} catch (Exception e) {
 			// TODO: handle exception
 			System.out.println(e.getMessage());
