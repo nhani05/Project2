@@ -23,11 +23,25 @@ public class BuildingServiceImpl implements BuildingService{
 		List<BuildingEntity> buildingEntities = buildingRepository.findAllBuildings(requestClient);
 		List<BuildingDTO> result = new ArrayList<BuildingDTO>();
 		for(BuildingEntity building : buildingEntities) {
-			BuildingDTO buildingDto = new BuildingDTO();
-			buildingDto.setName(building.getName());
-			buildingDto.setAddress(building.getStreet() + " " + building.getWard());
-			buildingDto.setNumberOfBasement(building.getNumberOfBasement());
-			result.add(buildingDto);
+			BuildingDTO buildingDTO = new BuildingDTO();
+			buildingDTO.setBuildingName(building.getBuildingName());
+			
+			String address = building.getStreet() + ", " + building.getWard() + ", " + "Quận " 
+							+ building.getDistrictId();
+			buildingDTO.setAddress(address);
+			
+			buildingDTO.setNumberOfBasement(building.getNumberOfBasement());
+			buildingDTO.setManagerName(building.getManagerName());
+			buildingDTO.setManagerPhoneNumber(building.getManagerPhoneNumber());
+			
+			buildingDTO.setFloorArea(building.getFloorArea());
+			buildingDTO.setEmptyArea(null);
+			
+			buildingDTO.setRentPrice(building.getRentPrice());
+			buildingDTO.setServiceFee(building.getServiceFee());
+			buildingDTO.setBrokerageFee(building.getBrokerageFee());
+			
+			result.add(buildingDTO);
 		}
 		return result;
 	}

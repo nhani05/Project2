@@ -1,5 +1,6 @@
 package com.javaweb.model;
 
+//java bean
 public class BuildingSearchRequestDTO {
 	private String buildingName;
 	private String ward, street, direction;
@@ -8,6 +9,14 @@ public class BuildingSearchRequestDTO {
 	private Integer lowerRentalPrice, upperRentalPrice;
 	private String managerName, managerPhoneNumber;
 	private Integer staffId;
+	private String rentType;
+	
+	public String getRentType() {
+		return rentType;
+	}
+	public void setRentType(String rentType) {
+		this.rentType = rentType;
+	}
 	public String getBuildingName() {
 		return buildingName;
 	}

@@ -21,59 +21,71 @@ public class BuildingRepositoryImpl implements BuildingRepository {
 	private static final String PASS_WORD = "123456";
 	
 	
+	private void appendLikeCondition(StringBuilder sql, String fieldName, String value) {
+		if(value != null && !value.trim().isEmpty() ) {
+			sql.append(" AND " + fieldName + " LIKE '%" + value + "%'");
+		}
+	}
+	
+	private void appendEqualCondition(StringBuilder sql, String fieldName, Object value) {
+	    if (value != null) {
+	        sql.append(" AND " + fieldName +" = '" + value.toString() + "'");
+	    }
+	}
+	
+	private void appendRangeCondition(StringBuilder sql, String fieldName, Object minValue, Object maxValue) {
+	    if (minValue != null) {
+	        sql.append(" AND ").append(fieldName).append(" >= ").append(minValue.toString());
+	    }
+	    if (maxValue != null) {
+	        sql.append(" AND ").append(fieldName).append(" <= ").append(maxValue.toString());
+	    }
+	}
+	
+	private void appendRentTypeConditions(StringBuilder sql, String rentTypeStr) {
+	    if (rentTypeStr != null && !rentTypeStr.trim().isEmpty()) {
+	        if (rentTypeStr.contains("Tầng trệt")) {
+	            sql.append(" AND rt.name = 'Tầng trệt'");
+	        }
+	        if (rentTypeStr.contains("Nội thất")) {
+	            sql.append(" AND rt.name = 'Nội thất'");
+	        }
+	        if (rentTypeStr.contains("Nguyên Căn")) {
+	            sql.append(" AND rt.name = 'Nguyên căn'");
+	        }
+	    }
+	}
+	
 	public String getBuildingSearchQuery(BuildingSearchRequestDTO requestClient) {
-		StringBuilder sql = new StringBuilder("SELECT * FROM building AS b WHERE 1 = 1");
+		StringBuilder sql = new StringBuilder("SELECT b.name, b.street, b.ward, b.districtid, b.floorarea,"
+				+ "b.servicefee, b.brokeragefee, b.managername, b.managerphonenumber, b.numberofbasement,"
+				+ "b.rentprice"
+				+ "\nFROM building AS b");
 		
-		sql.append("\nINNER JOIN rentarea AS r ON rentarea.buildingid = builiding.id"
-				+ "\nINNER JOIN assignmentbuilding AS a ON assignmentbuilding.buildingid = building.id");
-		if(requestClient.getBuildingName() != null && !requestClient.getBuildingName().equals("")) {
-			sql.append(" AND b.name LIKE '%" + requestClient.getBuildingName() + "%'");
-		}
+		sql.append("\nINNER JOIN rentarea AS r ON r.buildingid = b.id"
+				+ "\nINNER JOIN assignmentbuilding AS a ON a.buildingid = b.id"
+				+ "\nINNER JOIN buildingrenttype AS brt ON brt.buildingid = b.id"
+				+ "\nINNER JOIN renttype AS rt ON rt.id = brt.renttypeid"
+				+ "\nWHERE 1 = 1");
+	    appendLikeCondition(sql, "b.name", requestClient.getBuildingName());
+	    appendLikeCondition(sql, "b.street", requestClient.getStreet());
+	    appendLikeCondition(sql, "b.ward", requestClient.getWard());
+	    appendLikeCondition(sql, "b.managername", requestClient.getManagerName());
+	    
+		appendEqualCondition(sql, "b.managerphonenumber", requestClient.getManagerPhoneNumber());
+		appendEqualCondition(sql, "a.staffid", requestClient.getStaffId());
+	    appendEqualCondition(sql, "b.numberofbasement", requestClient.getNumberOfBasement());
+	    appendEqualCondition(sql, "b.level", requestClient.getLevel());
+	    appendEqualCondition(sql, "b.direction", requestClient.getDirection());
+	    appendEqualCondition(sql, "b.floorarea", requestClient.getFloorArea());
+	    appendEqualCondition(sql, "b.districtid", requestClient.getDistrictId());
 		
-		if(requestClient.getFloorArea() != null)
-			sql.append(" AND b.floorarea = " + requestClient.getFloorArea().toString());
+		appendRangeCondition(sql, "r.value", requestClient.getLowerRentalArea(), requestClient.getUpperRentalArea());
+		appendRangeCondition(sql, "b.rentprice", requestClient.getLowerRentalPrice(), requestClient.getUpperRentalPrice());
+
+		appendRentTypeConditions(sql, requestClient.getRentType());
 		
-		if(requestClient.getDistrictId() != null) {
-			sql.append(" AND b.districtid = " + requestClient.getDistrictId().toString());
-		}
-		if(requestClient.getWard() != null && ! requestClient.getWard().equals(""))
-			sql.append(" AND b.street LIKE '%" + requestClient.getWard() + "%'");
-//		if(requestClient.getBuildingName() != null && !requestClient.getBuildingName().equals("")) {
-//			sql.append(" AND name LIKE '%" + requestClient.getBuildingName() + "%'");
-//		}
-		
-		if(requestClient.getNumberOfBasement() != null) {
-			sql.append(" AND b.numberofbasement = " + requestClient.getNumberOfBasement().toString());
-		}
-		if(requestClient.getDirection() != null) {
-			sql.append(" AND b.direction = " + requestClient.getDirection());
-		}
-		if(requestClient.getLevel() != null) {
-			sql.append(" AND b.level = " + requestClient.getLevel().toString());
-		}
-		if(requestClient.getLowerRentalArea() != null) {
-			sql.append(" AND r.value >= " + requestClient.getLowerRentalArea().toString());
-		}
-		if(requestClient.getUpperRentalArea() != null) {
-			sql.append(" AND r.value <= " + requestClient.getUpperRentalArea().toString());
-		}
-		
-		if(requestClient.getLowerRentalPrice() != null) {
-			sql.append(" AND b.rentprice >= " + requestClient.getLowerRentalPrice().toString());
-		}
-		if(requestClient.getUpperRentalPrice() != null) {
-			sql.append(" AND b.rentprice <= " + requestClient.getUpperRentalPrice());
-		}
-		if(requestClient.getManagerName() != null && !requestClient.getManagerName().equals("")) {
-			sql.append(" AND b.managername LIKE '%" + requestClient.getManagerName() + "%'");
-		}
-		if(requestClient.getManagerPhoneNumber() != null && !requestClient.getManagerPhoneNumber().equals("")) {
-			sql.append(" AND b.managerphonenumber = " + requestClient.getManagerPhoneNumber());
-		}
-		if(requestClient.getStaffId() != null) {
-			sql.append(" AND a.staffid = " + requestClient.getStaffId().toString());
-		}
-		return sql.toString();
+		return sql.toString() + ";";
 	}
 	@Override
 	public List<BuildingEntity> findAllBuildings(BuildingSearchRequestDTO requestClient) {
@@ -83,14 +95,27 @@ public class BuildingRepositoryImpl implements BuildingRepository {
 			
 			System.out.println();
 			Statement stm = con.createStatement();
-			ResultSet rs = stm.executeQuery(this.getBuildingSearchQuery(name, districtId));
+			System.out.println(this.getBuildingSearchQuery(requestClient));
+			ResultSet rs = stm.executeQuery(this.getBuildingSearchQuery(requestClient));
 	
 			while(rs.next()) {
 				BuildingEntity buildingTmp = new BuildingEntity();
-				buildingTmp.setName(rs.getString("name"));
-				buildingTmp.setNumberOfBasement(rs.getInt("numberofbasement"));
+				buildingTmp.setBuildingName(rs.getString("name"));
+				
 				buildingTmp.setStreet(rs.getString("street"));
 				buildingTmp.setWard(rs.getString("ward"));
+				buildingTmp.setDistrictId(rs.getInt("districtid"));
+				
+				buildingTmp.setFloorArea(rs.getInt("floorarea"));
+				
+				buildingTmp.setServiceFee(rs.getInt("servicefee"));
+				buildingTmp.setBrokerageFee(rs.getInt("brokeragefee"));
+				
+				buildingTmp.setManagerName(rs.getString("managername"));
+				buildingTmp.setManagerPhoneNumber(rs.getString("managerphonenumber"));
+				
+				buildingTmp.setNumberOfBasement(rs.getInt("numberofbasement"));
+				buildingTmp.setRentPrice(rs.getInt("rentprice"));
 				result.add(buildingTmp);
 			}
 		} catch(SQLException e) {
