@@ -1,7 +1,6 @@
 package com.javaweb.repository.impl;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -11,15 +10,12 @@ import java.util.List;
 import org.springframework.stereotype.Repository;
 
 import com.javaweb.model.BuildingSearchRequestDTO;
-import com.javaweb.repository.*;
+import com.javaweb.repository.BuildingRepository;
 import com.javaweb.repository.entity.BuildingEntity;
+import com.javaweb.utils.JDBCConnectionUtil;
 
 @Repository
 public class BuildingRepositoryImpl implements BuildingRepository {
-	private static final String URL = "jdbc:mysql://localhost:3306/estatebasic";
-	private static final String USER_NAME = "root";
-	private static final String PASS_WORD = "123456";
-	
 	
 	private void appendLikeCondition(StringBuilder sql, String fieldName, String value) {
 		if(value != null && !value.trim().isEmpty() ) {
@@ -57,7 +53,7 @@ public class BuildingRepositoryImpl implements BuildingRepository {
 	}
 	
 	public String getBuildingSearchQuery(BuildingSearchRequestDTO requestClient) {
-		StringBuilder sql = new StringBuilder("SELECT b.name, b.street, b.ward, b.districtid, b.floorarea,"
+		StringBuilder sql = new StringBuilder("SELECT b.id, b.name, b.street, b.ward, b.districtid, b.floorarea,"
 				+ "b.servicefee, b.brokeragefee, b.managername, b.managerphonenumber, b.numberofbasement,"
 				+ "b.rentprice"
 				+ "\nFROM building AS b");
@@ -90,21 +86,19 @@ public class BuildingRepositoryImpl implements BuildingRepository {
 	@Override
 	public List<BuildingEntity> findAllBuildings(BuildingSearchRequestDTO requestClient) {
 		List<BuildingEntity> result = new ArrayList<BuildingEntity>();
-		try{
-			Connection con = DriverManager.getConnection(URL, USER_NAME, PASS_WORD);
-			
-			System.out.println();
+		try(Connection con = JDBCConnectionUtil.getConnections()){
 			Statement stm = con.createStatement();
 			System.out.println(this.getBuildingSearchQuery(requestClient));
 			ResultSet rs = stm.executeQuery(this.getBuildingSearchQuery(requestClient));
 	
 			while(rs.next()) {
 				BuildingEntity buildingTmp = new BuildingEntity();
+				buildingTmp.setBuildingId(rs.getLong("id"));
 				buildingTmp.setBuildingName(rs.getString("name"));
 				
 				buildingTmp.setStreet(rs.getString("street"));
 				buildingTmp.setWard(rs.getString("ward"));
-				buildingTmp.setDistrictId(rs.getInt("districtid"));
+				buildingTmp.setDistrictId(rs.getLong("districtid"));
 				
 				buildingTmp.setFloorArea(rs.getInt("floorarea"));
 				

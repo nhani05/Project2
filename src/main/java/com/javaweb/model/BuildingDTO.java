@@ -2,10 +2,10 @@ package com.javaweb.model;
 
 // sử dụng Map hoặc Java Beans để chứ tham số
 public class BuildingDTO {
-	private String buildingName, address;
+	private String buildingName, address, floorArea;
 	private Integer numberOfBasement;
 	private String managerName, managerPhoneNumber;
-	private Integer floorArea, emptyArea, rentPrice, serviceFee, brokerageFee;
+	private Integer emptyArea, rentPrice, serviceFee, brokerageFee;
 	public String getBuildingName() {
 		return buildingName;
 	}
@@ -36,10 +36,11 @@ public class BuildingDTO {
 	public void setManagerPhoneNumber(String managerPhoneNumber) {
 		this.managerPhoneNumber = managerPhoneNumber;
 	}
-	public Integer getFloorArea() {
+
+	public String getFloorArea() {
 		return floorArea;
 	}
-	public void setFloorArea(Integer floorArea) {
+	public void setFloorArea(String floorArea) {
 		this.floorArea = floorArea;
 	}
 	public Integer getEmptyArea() {

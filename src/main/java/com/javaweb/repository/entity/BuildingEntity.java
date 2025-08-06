@@ -2,10 +2,17 @@ package com.javaweb.repository.entity;
 
 public class BuildingEntity {
 	private String buildingName,  street, ward; // tên tòa nhà, phố, đường
-	private Integer floorArea, numberOfBasement, rentPrice, districtId;
+	private Integer floorArea, numberOfBasement, rentPrice;
+	private Long buildingId, districtId;
 	private Integer serviceFee, brokerageFee; // phí dịch vụ, phí môi giới
 	private String managerName, managerPhoneNumber; // tên quản lý, số điện thoại
 	
+	public Long getBuildingId() {
+		return buildingId;
+	}
+	public void setBuildingId(Long buildingId) {
+		this.buildingId = buildingId;
+	}
 	public String getBuildingName() {
 		return buildingName;
 	}
@@ -43,10 +50,10 @@ public class BuildingEntity {
 	public void setRentPrice(Integer rentPrice) {
 		this.rentPrice = rentPrice;
 	}
-	public Integer getDistrictId() {
+	public Long getDistrictId() {
 		return districtId;
 	}
-	public void setDistrictId(Integer districtId) {
+	public void setDistrictId(Long districtId) {
 		this.districtId = districtId;
 	}
 	public Integer getServiceFee() {
