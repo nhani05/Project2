@@ -101,6 +101,7 @@ public class BuildingRepositoryImpl implements BuildingRepository {
 				buildingTmp.setDistrictId(rs.getLong("districtid"));
 				
 				buildingTmp.setFloorArea(rs.getInt("floorarea"));
+				buildingTmp.setEmptyArea(null);
 				
 				buildingTmp.setServiceFee(rs.getInt("servicefee"));
 				buildingTmp.setBrokerageFee(rs.getInt("brokeragefee"));

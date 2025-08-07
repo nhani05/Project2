@@ -3,9 +3,8 @@ package com.javaweb.model;
 // sử dụng Map hoặc Java Beans để chứ tham số
 public class BuildingDTO {
 	private String buildingName, address, floorArea;
-	private Integer numberOfBasement;
+	private Integer emptyArea, rentPrice, serviceFee, brokerageFee, numberOfBasement;
 	private String managerName, managerPhoneNumber;
-	private Integer emptyArea, rentPrice, serviceFee, brokerageFee;
 	public String getBuildingName() {
 		return buildingName;
 	}
@@ -17,24 +16,6 @@ public class BuildingDTO {
 	}
 	public void setAddress(String address) {
 		this.address = address;
-	}
-	public Integer getNumberOfBasement() {
-		return numberOfBasement;
-	}
-	public void setNumberOfBasement(Integer numberOfBasement) {
-		this.numberOfBasement = numberOfBasement;
-	}
-	public String getManagerName() {
-		return managerName;
-	}
-	public void setManagerName(String managerName) {
-		this.managerName = managerName;
-	}
-	public String getManagerPhoneNumber() {
-		return managerPhoneNumber;
-	}
-	public void setManagerPhoneNumber(String managerPhoneNumber) {
-		this.managerPhoneNumber = managerPhoneNumber;
 	}
 
 	public String getFloorArea() {
@@ -66,6 +47,24 @@ public class BuildingDTO {
 	}
 	public void setBrokerageFee(Integer brokerageFee) {
 		this.brokerageFee = brokerageFee;
+	}
+	public Integer getNumberOfBasement() {
+		return numberOfBasement;
+	}
+	public void setNumberOfBasement(Integer numberOfBasement) {
+		this.numberOfBasement = numberOfBasement;
+	}
+	public String getManagerName() {
+		return managerName;
+	}
+	public void setManagerName(String managerName) {
+		this.managerName = managerName;
+	}
+	public String getManagerPhoneNumber() {
+		return managerPhoneNumber;
+	}
+	public void setManagerPhoneNumber(String managerPhoneNumber) {
+		this.managerPhoneNumber = managerPhoneNumber;
 	}
 	
 	

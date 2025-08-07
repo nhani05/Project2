@@ -2,11 +2,17 @@ package com.javaweb.repository.entity;
 
 public class BuildingEntity {
 	private String buildingName,  street, ward; // tên tòa nhà, phố, đường
-	private Integer floorArea, numberOfBasement, rentPrice;
+	private Integer floorArea, numberOfBasement, rentPrice, emptyArea;
+    private Integer serviceFee, brokerageFee; // phí dịch vụ, phí môi giới
 	private Long buildingId, districtId;
-	private Integer serviceFee, brokerageFee; // phí dịch vụ, phí môi giới
-	private String managerName, managerPhoneNumber; // tên quản lý, số điện thoại
 	
+	private String managerName, managerPhoneNumber; // tên quản lý, số điện thoại
+	public Integer getEmptyArea() {
+		return emptyArea;
+	}
+	public void setEmptyArea(Integer emptyArea) {
+		this.emptyArea = emptyArea;
+	}
 	public Long getBuildingId() {
 		return buildingId;
 	}
