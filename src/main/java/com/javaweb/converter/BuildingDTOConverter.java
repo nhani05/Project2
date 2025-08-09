@@ -38,14 +38,15 @@ public class BuildingDTOConverter {
 	}
 	
 	public BuildingDTO convertToBuildingDTO(BuildingEntity building) {
-		BuildingDTO buildingDTO = modelMapper.map(building, BuildingDTO.class);
+		BuildingDTO buildingDTO = modelMapper.map(building, BuildingDTO.class);		
+		buildingDTO.setFloorArea(this.convertToFloorAreaString(building));
+		buildingDTO.setAddress(this.getBuildingAdress(building));	
+		return buildingDTO;
+	}
+}
 //		// hoặc
 //		BuildingDTO buildingDTO = new BuildingDTO();
 //		buildingDTO = modelMapper.map(buildingDTO, buildingDTO.getClass());
-		
-		buildingDTO.setFloorArea(this.convertToFloorAreaString(building));
-		buildingDTO.setAddress(this.getBuildingAdress(building));
-		
 //		buildingDTO.setBuildingName(building.getBuildingName());
 //		buildingDTO.setNumberOfBasement(building.getNumberOfBasement());
 //		buildingDTO.setManagerName(building.getManagerName());
@@ -54,7 +55,3 @@ public class BuildingDTOConverter {
 //		buildingDTO.setRentPrice(building.getRentPrice());
 //		buildingDTO.setServiceFee(building.getServiceFee());
 //		buildingDTO.setBrokerageFee(building.getBrokerageFee());
-		
-		return buildingDTO;
-	}
-}
