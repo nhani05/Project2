@@ -1,16 +1,17 @@
 package com.javaweb.repository.impl;
 
+import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Repository;
 
+import com.javaweb.builder.BuildingSearch;
 import com.javaweb.repository.BuildingRepository;
 import com.javaweb.repository.entity.BuildingEntity;
 import com.javaweb.utils.JDBCConnectionUtil;
@@ -19,89 +20,94 @@ import com.javaweb.utils.StringUtil;
 @Repository
 public class BuildingRepositoryImpl implements BuildingRepository {
 	
-	private static void joinTable(Map<String, Object> params, List<String> rentType, StringBuilder sql) {
-		String staffId = params.get("staffId").toString(); // String staffId = (String) params.get...... vì coi như là String
-		if(StringUtil.checkAttribute(staffId) == true) {
+	private static void joinTable(BuildingSearch buildingSearch, StringBuilder sql) {
+//		Object tmp = buildingSearch.getStaffId();// String staffId = (String) params.get...... vì coi như là String
+//		String staffId;
+//		if(tmp != null) {
+//			staffId = tmp.toString();
+//		} else {
+//			staffId = "";
+//		}
+		if(StringUtil.checkAttribute(buildingSearch.getStaffId()) == true) {
 			sql.append("\nINNER JOIN assignmentbuilding AS a ON a.buildingid = b.id ");
 		}
-		if(!rentType.isEmpty() && rentType != null) {
+		if(!buildingSearch.getRentType().isEmpty() && buildingSearch.getRentType() != null) {
 			sql.append("\nINNER JOIN buildingrenttype AS brt ON brt.buildingid = b.id");
 			sql.append("\nINNER JOIN renttype AS rt ON rt.id = brt.renttypeid");
 		}
-		String lowerRentalArea = params.get("lowerRentalArea").toString();
-		String upperRentalArea = params.get("upperRentalArea").toString();
-		if(StringUtil.checkAttribute(upperRentalArea) == true || StringUtil.checkAttribute(lowerRentalArea) == true) {
+		if(StringUtil.checkAttribute(buildingSearch.getUpperRentalArea()) == true || StringUtil.checkAttribute(buildingSearch.getLowerRentalArea()) == true) {
 			sql.append("\nINNER JOIN rentarea AS ra ON ra.buildingid = b.id");
 		}
 	}
 	
-	private static void queryNormal(Map<String, Object> params, StringBuilder condition) {
-		for(Map.Entry<String, Object> item : params.entrySet()) {
-			// nếu là null thì không cần điều kiện
-			String attribute = item.getKey().toString();
-			if(!attribute.equals("staffId") && !attribute.endsWith("RentalArea") && !attribute.equals("RentalPrice") 
-				&& !attribute.equals("rentType") ) {
-				String valAttribute = item.getValue().toString();
-				if(StringUtil.checkAttribute(valAttribute) == true) {
-					if(StringUtil.isNumber(valAttribute) == true) {
-						condition.append(" AND b." + attribute.toLowerCase() + " = " + valAttribute);
-					} else {
-						condition.append(" AND b." + attribute.toLowerCase() + " LIKE '%" + valAttribute + "%'");
+	private static void queryNormal(BuildingSearch buildingSearch, StringBuilder condition) {
+
+		try {
+			Field[] fields = BuildingSearch.class.getFields();
+			for(Field item : fields) {
+				item.setAccessible(true);
+				String fieldName = item.getName();
+				if(!fieldName.equals("staffId") && !fieldName.endsWith("RentalArea") && !fieldName.equals("RentalPrice") 
+					&& !fieldName.equals("rentType") ) {
+					String valAttribute = item.get(buildingSearch).toString();
+					if(StringUtil.checkAttribute(valAttribute) == true) {
+						if(StringUtil.isNumber(valAttribute) == true) {
+							condition.append(" AND b." + fieldName.toLowerCase() + " = " + valAttribute);
+						} else {
+							condition.append(" AND b." + fieldName.toLowerCase() + " LIKE '%" + valAttribute + "%'");
+						}
 					}
 				}
 			}
+		} catch(Exception e) {
+			e.printStackTrace();
 		}
 	}
 	
-	private static void querySpecial(Map<String, Object> params, List<String> rentType, StringBuilder condition) {
-		String staffId = params.get("staffId").toString();
-		if(StringUtil.checkAttribute(staffId)) {
-			condition.append(" AND a.staffid = " + staffId);
+	private static void querySpecial(BuildingSearch buildingSearch, StringBuilder condition) {
+		if(StringUtil.checkAttribute(buildingSearch.getStaffId())) {
+			condition.append(" AND a.staffid = " + buildingSearch.getStaffId());
 		}
-		String lowerRentalArea = params.get("lowerRentalArea").toString();
-		String upperRentalArea = params.get("upperRentalArea").toString();
-		if(StringUtil.checkAttribute(lowerRentalArea)) {
-			condition.append(" AND ra.value >= " + lowerRentalArea);
+
+		if(StringUtil.checkAttribute(buildingSearch.getLowerRentalArea())) {
+			condition.append(" AND ra.value >= " + buildingSearch.getLowerRentalArea());
 		}
-		if(StringUtil.checkAttribute(upperRentalArea)) {
-			condition.append(" AND ra.value <= " + upperRentalArea);
+		if(StringUtil.checkAttribute(buildingSearch.getUpperRentalArea())) {
+			condition.append(" AND ra.value <= " + buildingSearch.getUpperRentalArea());
 		}
-		
-		String lowerRentalPrice = params.get("lowerRentalPrice").toString();
-		String upperRentalPrice = params.get("upperRentalPrice").toString();
-		if(StringUtil.checkAttribute(lowerRentalPrice)) {
-			condition.append(" AND b.rentprice >= " + lowerRentalPrice);
+
+		if(StringUtil.checkAttribute(buildingSearch.getLowerRentalPrice())) {
+			condition.append(" AND b.rentprice >= " + buildingSearch.getLowerRentalArea());
 		}
-		if(StringUtil.checkAttribute(upperRentalPrice)) {
-			condition.append(" AND b.rentprice <= " + upperRentalPrice);
+		if(StringUtil.checkAttribute(buildingSearch.getUpperRentalPrice())) {
+			condition.append(" AND b.rentprice <= " + buildingSearch.getUpperRentalPrice());
 		}
 		
 		condition.append(" AND rt.name IN (" +
-			    rentType.stream()
+			    buildingSearch.getRentType().stream()
 			            .map(type -> "'" + type + "'")
 			            .collect(Collectors.joining(", ")) +
 			")");
 	}
 	
-	private String getBuildingSearchQuery(Map<String, Object> params, List<String> rentType) {
+	private String getBuildingSearchQuery(BuildingSearch buildingSearch) {
 		StringBuilder sql = new StringBuilder("SELECT b.id, b.name, b.street, b.ward, b.districtid, b.floorarea, "
 				+ "b.servicefee, b.brokeragefee, b.managername, b.managerphonenumber, b.numberofbasement, "
 				+ "b.rentprice "
 				+ "\nFROM building AS b");
 		StringBuilder condition = new StringBuilder("\nWHERE 1 = 1 ");
-		joinTable(params, rentType, sql);
-		queryNormal(params, condition);
-		querySpecial(params, rentType, condition);
-		sql.append(condition + ";");
+		joinTable(buildingSearch, sql);
+		queryNormal(buildingSearch, condition);
+		querySpecial(buildingSearch, condition);
+		sql.append(";");
 		return sql.toString();
 	}
-	@Override
-	public List<BuildingEntity> findAllBuildings(Map<String, Object> params, List<String> rentType) {
+	public List<BuildingEntity> findAllBuildings(BuildingSearch buildingSearch) {
 		List<BuildingEntity> result = new ArrayList<BuildingEntity>();
 		
 		try(Connection con = JDBCConnectionUtil.getConnections()){
 			Statement stm = con.createStatement();
-			String sql = this.getBuildingSearchQuery(params, rentType);
+			String sql = this.getBuildingSearchQuery(buildingSearch);
 			System.out.println(sql);
 			ResultSet rs = stm.executeQuery(sql);
 	

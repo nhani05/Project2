@@ -1,8 +1,8 @@
 package com.javaweb.utils;
 
 public class StringUtil {
-	public static boolean checkAttribute(String attribute) {
-		if(attribute != null && !attribute.equals("")) {
+	public static boolean checkAttribute(Object attribute) {
+		if(attribute != null) {
 			return true;
 		}
 		return false;
