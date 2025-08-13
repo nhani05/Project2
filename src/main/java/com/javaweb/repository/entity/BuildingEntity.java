@@ -1,23 +1,89 @@
 package com.javaweb.repository.entity;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
+@Entity
+@Table(name="building")
 public class BuildingEntity {
-	private String buildingName,  street, ward; // tên tòa nhà, phố, đường
-	private Integer floorArea, numberOfBasement, rentPrice, emptyArea;
-    private Integer serviceFee, brokerageFee; // phí dịch vụ, phí môi giới
-	private Long buildingId, districtId;
 	
-	private String managerName, managerPhoneNumber; // tên quản lý, số điện thoại
-	public Integer getEmptyArea() {
-		return emptyArea;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
+	
+	@Column(name="name")
+	private String buildingName;
+	
+	@Column(name="street")
+	private String street;
+	
+	@Column(name="ward")
+	private String ward; // tên tòa nhà, phố, đường
+	
+	@Column(name="floorarea")
+	private Integer floorArea;
+	
+	@Column(name="numberofbasement")
+	private Integer numberOfBasement;
+	
+	@Column(name="rentprice")
+	private Integer rentPrice;
+	
+//	@Column(name="emptyarea")
+//	private Integer emptyArea;
+	
+	@Column(name="servicefee")
+    private Integer serviceFee;
+	
+	@Column(name="brokeragefee")
+    private Integer brokerageFee;
+
+//	@Column(name="districtid")
+//	private Long districtId;
+	
+	@Column(name="managername")
+	private String managerName;
+	
+	@Column(name="managerphonenumber")
+	private String managerPhoneNumber; // tên quản lý, số điện thoại
+	
+	@ManyToOne
+	@JoinColumn(name="districtid") // fix lỗi này khi chạy sẽ tạo ra schema mới
+	private DistrictEntity districtEntity;
+	
+	@OneToMany(mappedBy = "buildingEntity", fetch = FetchType.LAZY)
+	private List<RentAreaEntity> areaEntities = new ArrayList<RentAreaEntity>();
+	
+	
+	public DistrictEntity getDistrictEntity() {
+		return districtEntity;
 	}
-	public void setEmptyArea(Integer emptyArea) {
-		this.emptyArea = emptyArea;
+	public void setDistrictEntity(DistrictEntity districtEntity) {
+		this.districtEntity = districtEntity;
 	}
-	public Long getBuildingId() {
-		return buildingId;
+//	public Integer getEmptyArea() {
+//		return emptyArea;
+//	}
+//	public void setEmptyArea(Integer emptyArea) {
+//		this.emptyArea = emptyArea;
+//	}
+
+	public Long getId() {
+		return id;
 	}
-	public void setBuildingId(Long buildingId) {
-		this.buildingId = buildingId;
+	public void setId(Long id) {
+		this.id = id;
 	}
 	public String getBuildingName() {
 		return buildingName;
@@ -56,12 +122,12 @@ public class BuildingEntity {
 	public void setRentPrice(Integer rentPrice) {
 		this.rentPrice = rentPrice;
 	}
-	public Long getDistrictId() {
-		return districtId;
-	}
-	public void setDistrictId(Long districtId) {
-		this.districtId = districtId;
-	}
+//	public Long getDistrictId() {
+//		return districtId;
+//	}
+//	public void setDistrictId(Long districtId) {
+//		this.districtId = districtId;
+//	}
 	public Integer getServiceFee() {
 		return serviceFee;
 	}
@@ -86,5 +152,12 @@ public class BuildingEntity {
 	public void setManagerPhoneNumber(String managerPhoneNumber) {
 		this.managerPhoneNumber = managerPhoneNumber;
 	}
+	public List<RentAreaEntity> getAreaEntities() {
+		return areaEntities;
+	}
+	public void setAreaEntities(List<RentAreaEntity> areaEntities) {
+		this.areaEntities = areaEntities;
+	}
+
 	
 }
