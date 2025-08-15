@@ -2,7 +2,7 @@ package com.javaweb.repository;
 
 import com.javaweb.repository.entity.DistrictEntity;
 
-public interface DistrictRepository {
+public interface IDistrictRepository {
 	DistrictEntity  findDistrictNameById(Long id);
 
 }

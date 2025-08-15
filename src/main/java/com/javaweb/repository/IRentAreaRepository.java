@@ -5,6 +5,6 @@ import java.util.List;
 
 import com.javaweb.repository.entity.RentAreaEntity;
 
-public interface RentAreaRepository {
+public interface IRentAreaRepository {
 	List<RentAreaEntity> getRentAreaByBuildingId(Long buildingId);
 }

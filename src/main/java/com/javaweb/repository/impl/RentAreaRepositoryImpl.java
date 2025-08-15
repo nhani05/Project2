@@ -9,12 +9,12 @@ import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
-import com.javaweb.repository.RentAreaRepository;
+import com.javaweb.repository.IRentAreaRepository;
 import com.javaweb.repository.entity.RentAreaEntity;
 import com.javaweb.utils.JDBCConnectionUtil;
 
 @Repository
-public class RentAreaRepositoryImpl implements RentAreaRepository{
+public class RentAreaRepositoryImpl implements IRentAreaRepository{
 	@Override
 	public List<RentAreaEntity> getRentAreaByBuildingId(Long buildingId) {
 		List<RentAreaEntity> rentAreas = new ArrayList<RentAreaEntity>();

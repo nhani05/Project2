@@ -7,11 +7,11 @@ import java.sql.Statement;
 
 import org.springframework.stereotype.Repository;
 
-import com.javaweb.repository.DistrictRepository;
+import com.javaweb.repository.IDistrictRepository;
 import com.javaweb.repository.entity.DistrictEntity;
 import com.javaweb.utils.JDBCConnectionUtil;
 @Repository
-public class DistrictRepositoryImpl implements DistrictRepository{
+public class DistrictRepositoryImpl implements IDistrictRepository{
 	private String getDistrictQuery(Long id) {
 		StringBuilder sql = new StringBuilder("SELECT d.name FROM district AS d WHERE d.id = " + id + ";");
 		return sql.toString();

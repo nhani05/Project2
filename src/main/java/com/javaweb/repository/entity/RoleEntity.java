@@ -10,6 +10,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -39,9 +40,21 @@ public class RoleEntity {
 	@Column(name="modifiedby")
 	private Date modifiedby;// varchar(255)
 	
-	@OneToMany(mappedBy = "roleEntity", fetch = FetchType.LAZY)
-	private List<UserRoleEntity> userRoleEntities = new ArrayList<UserRoleEntity>();
+//	@OneToMany(mappedBy = "roleEntity", fetch = FetchType.LAZY)
+//	private List<UserRoleEntity> userRoleEntities = new ArrayList<UserRoleEntity>();
 	
+	@ManyToMany(mappedBy = "roleEntities", fetch = FetchType.LAZY)
+	private List<UserEntity> userEntities = new ArrayList<UserEntity>();
+	
+	
+
+	public List<UserEntity> getUserEntities() {
+		return userEntities;
+	}
+
+	public void setUserEntities(List<UserEntity> userEntities) {
+		this.userEntities = userEntities;
+	}
 
 	public Long getId() {
 		return id;
@@ -99,13 +112,13 @@ public class RoleEntity {
 		this.modifiedby = modifiedby;
 	}
 
-	public List<UserRoleEntity> getUserRoleEntities() {
-		return userRoleEntities;
-	}
-
-	public void setUserRoleEntities(List<UserRoleEntity> userRoleEntities) {
-		this.userRoleEntities = userRoleEntities;
-	}
-	
+//	public List<UserRoleEntity> getUserRoleEntities() {
+//		return userRoleEntities;
+//	}
+//
+//	public void setUserRoleEntities(List<UserRoleEntity> userRoleEntities) {
+//		this.userRoleEntities = userRoleEntities;
+//	}
+//	
 	
 }

@@ -12,13 +12,13 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Repository;
 
 import com.javaweb.builder.BuildingSearch;
-import com.javaweb.repository.BuildingRepository;
+import com.javaweb.repository.IBuildingRepository;
 import com.javaweb.repository.entity.BuildingEntity;
 import com.javaweb.utils.JDBCConnectionUtil;
 import com.javaweb.utils.StringUtil;
 
 @Repository
-public class JDBCBuildingRepositoryImpl implements BuildingRepository {
+public class JDBCBuildingRepositoryImpl implements IBuildingRepository {
 	
 	private static void joinTable(BuildingSearch buildingSearch, StringBuilder sql) {
 		if(StringUtil.checkAttribute(buildingSearch.getStaffId()) == true) {
@@ -130,6 +130,18 @@ public class JDBCBuildingRepositoryImpl implements BuildingRepository {
 			System.out.println("failed");
 		}
 		return result;
+	}
+
+	@Override
+	public void addBuilding(BuildingEntity buildingEntity) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void deleteBuilding(Long id) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }
