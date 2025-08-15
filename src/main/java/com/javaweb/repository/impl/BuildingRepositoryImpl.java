@@ -40,6 +40,7 @@ public class BuildingRepositoryImpl implements IBuildingRepository {
 	}
 
 	@Override
+	@Transactional
 	public void deleteBuilding(Long id) {
 		// TODO Auto-generated method stub
 		BuildingEntity buildingEntity = entityManager.find(BuildingEntity.class, id);
