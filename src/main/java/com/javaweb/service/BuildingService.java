@@ -6,9 +6,10 @@ import java.util.Map;
 import com.javaweb.model.BuildingDTO;
 import com.javaweb.model.BuildingRequestDTO;
 
-public interface IBuildingService {
+public interface BuildingService {
 
-	public List<BuildingDTO> findAllBuildings(Map<String, Object> params, List<String> rentType);
+	List<BuildingDTO> findAllBuildings(Map<String, Object> params, List<String> rentType);
 	void addBuilding(BuildingRequestDTO buildingRequestDTO);
 	void deleteBuilding(Long id);
+	void updateBuilding(BuildingRequestDTO buildingRequestDTO);
 }

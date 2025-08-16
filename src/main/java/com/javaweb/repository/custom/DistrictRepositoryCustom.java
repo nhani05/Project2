@@ -1,8 +1,8 @@
-package com.javaweb.repository;
+package com.javaweb.repository.custom;
 
 import com.javaweb.repository.entity.DistrictEntity;
 
-public interface IDistrictRepository {
+public interface DistrictRepositoryCustom {
 	DistrictEntity  findDistrictNameById(Long id);
 
 }

@@ -3,8 +3,18 @@ package com.javaweb.model;
 // sử dụng Map hoặc Java Beans để chứ tham số
 public class BuildingDTO {
 	private String buildingName, address, floorArea;
+	private Long districtId;
 	private Integer emptyArea, rentPrice, serviceFee, brokerageFee, numberOfBasement;
 	private String managerName, managerPhoneNumber;
+	
+	
+	
+	public Long getDistrictId() {
+		return districtId;
+	}
+	public void setDistrictId(Long districtId) {
+		this.districtId = districtId;
+	}
 	public String getBuildingName() {
 		return buildingName;
 	}
@@ -66,6 +76,5 @@ public class BuildingDTO {
 	public void setManagerPhoneNumber(String managerPhoneNumber) {
 		this.managerPhoneNumber = managerPhoneNumber;
 	}
-	
 	
 }

@@ -1,10 +1,10 @@
-package com.javaweb.repository;
+package com.javaweb.repository.custom;
 
 
 import java.util.List;
 
 import com.javaweb.repository.entity.RentAreaEntity;
 
-public interface IRentAreaRepository {
+public interface RentAreaRepositoryCustom {
 	List<RentAreaEntity> getRentAreaByBuildingId(Long buildingId);
 }

@@ -1,17 +1,16 @@
-package com.javaweb.repository.impl;
+package com.javaweb.repository.custom.impl;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import org.springframework.stereotype.Repository;
-
-import com.javaweb.repository.IDistrictRepository;
+import com.javaweb.repository.custom.DistrictRepositoryCustom;
 import com.javaweb.repository.entity.DistrictEntity;
 import com.javaweb.utils.JDBCConnectionUtil;
-@Repository
-public class DistrictRepositoryImpl implements IDistrictRepository{
+
+
+public class DistrictRepositoryImpl implements DistrictRepositoryCustom{
 	private String getDistrictQuery(Long id) {
 		StringBuilder sql = new StringBuilder("SELECT d.name FROM district AS d WHERE d.id = " + id + ";");
 		return sql.toString();

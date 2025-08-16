@@ -1,4 +1,4 @@
-package com.javaweb.repository.impl;
+package com.javaweb.repository.custom.impl;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -7,14 +7,12 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.stereotype.Repository;
-
-import com.javaweb.repository.IRentAreaRepository;
+import com.javaweb.repository.custom.RentAreaRepositoryCustom;
 import com.javaweb.repository.entity.RentAreaEntity;
 import com.javaweb.utils.JDBCConnectionUtil;
 
-@Repository
-public class RentAreaRepositoryImpl implements IRentAreaRepository{
+
+public class RentAreaRepositoryImpl implements RentAreaRepositoryCustom{
 	@Override
 	public List<RentAreaEntity> getRentAreaByBuildingId(Long buildingId) {
 		List<RentAreaEntity> rentAreas = new ArrayList<RentAreaEntity>();

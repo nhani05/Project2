@@ -13,14 +13,14 @@ import com.javaweb.converter.BuildingEntityConverter;
 import com.javaweb.converter.BuildingSearchBuilderConverter;
 import com.javaweb.model.BuildingDTO;
 import com.javaweb.model.BuildingRequestDTO;
-import com.javaweb.repository.IBuildingRepository;
+import com.javaweb.repository.BuildingRepository;
 import com.javaweb.repository.entity.BuildingEntity;
-import com.javaweb.service.IBuildingService;
+import com.javaweb.service.BuildingService;
 
 @Service
-public class BuildingServiceImpl implements IBuildingService{
+public class BuildingServiceImpl implements BuildingService{
 	@Autowired
-	private IBuildingRepository buildingRepository;
+	private BuildingRepository buildingRepository;
 	
 	@Autowired
 	private BuildingDTOConverter buildingDTOConverter;
@@ -57,5 +57,14 @@ public class BuildingServiceImpl implements IBuildingService{
 		buildingRepository.deleteBuilding(id);
 		
 	}
+
+	@Override
+	public void updateBuilding(BuildingRequestDTO buildingRequestDTO) {
+		// TODO Auto-generated method stub
+		BuildingEntity buildingEntity = buildingEntityConverter.convertToBuildingEntity(buildingRequestDTO);
+		buildingRepository.save(buildingEntity);
+		
+	}
 	
+
 }

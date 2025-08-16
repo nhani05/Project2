@@ -4,8 +4,7 @@ Build-Jdk: 24.0.1
 Implementation-Title: spring-boot-non-jwt
 Implementation-Version: 1.0
 Implementation-Vendor-Id: com.javaweb
-Implementation-Vendor: Pivotal Software, Inc.
-Implementation-URL: https://projects.spring.io/spring-boot/spring-boot-n
- on-jwt/
+Implementation-URL: https://projects.spring.io/spring-boot/#/spring-boot
+ -starter-parent/spring-boot-non-jwt
 Created-By: Maven Integration for Eclipse
 

@@ -1,24 +1,37 @@
-package com.javaweb.repository.impl;
+package com.javaweb.repository.custom.impl;
 
 import java.lang.reflect.Field;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Repository;
 
 import com.javaweb.builder.BuildingSearch;
-import com.javaweb.repository.IBuildingRepository;
+import com.javaweb.repository.custom.BuildingRepositoryCustom;
 import com.javaweb.repository.entity.BuildingEntity;
-import com.javaweb.utils.JDBCConnectionUtil;
 import com.javaweb.utils.StringUtil;
 
 @Repository
-public class JDBCBuildingRepositoryImpl implements IBuildingRepository {
+public class BuildingRepositoryCustomImpl implements BuildingRepositoryCustom{
+
+	@PersistenceContext
+	private EntityManager entityManager;
+	
+//	@Override
+//	public List<BuildingEntity> findAllBuildings(BuildingSearch buildingSearch) {
+//		// TODO Auto-generated method stub
+//		//JQL sẽ làm việc trên Entity
+////		String sql = "FROM BuildingEntity";
+////		Query query = entityManager.createQuery(sql, BuildingEntity.class); // map đối tượng, không cần set dữ liệu
+//		String sql = "SELECT * FROM building AS b WHERE b.districtid = 1";
+//		Query query = entityManager.createNativeQuery(sql, BuildingEntity.class);
+//		return query.getResultList();
+//	}
 	
 	private static void joinTable(BuildingSearch buildingSearch, StringBuilder sql) {
 		if(StringUtil.checkAttribute(buildingSearch.getStaffId()) == true) {
@@ -96,52 +109,25 @@ public class JDBCBuildingRepositoryImpl implements IBuildingRepository {
 		return sql.toString();
 	}
 	public List<BuildingEntity> findAllBuildings(BuildingSearch buildingSearch) {
-		List<BuildingEntity> result = new ArrayList<BuildingEntity>();
-		
-		try(Connection con = JDBCConnectionUtil.getConnections()){
-			Statement stm = con.createStatement();
-			String sql = this.getBuildingSearchQuery(buildingSearch);
-			System.out.println(sql);
-			ResultSet rs = stm.executeQuery(sql);
-	
-			while(rs.next()) {
-				BuildingEntity buildingTmp = new BuildingEntity();
-				buildingTmp.setId(rs.getLong("id"));
-				buildingTmp.setBuildingName(rs.getString("name"));
-				
-				buildingTmp.setStreet(rs.getString("street"));
-				buildingTmp.setWard(rs.getString("ward"));
-				buildingTmp.setDistrictEntity(null);//.setDistrictId(rs.getLong("districtid"));
-				
-				buildingTmp.setFloorArea(rs.getInt("floorarea"));
-				
-				buildingTmp.setServiceFee(rs.getInt("servicefee"));
-				buildingTmp.setBrokerageFee(rs.getInt("brokeragefee"));
-				
-				buildingTmp.setManagerName(rs.getString("managername"));
-				buildingTmp.setManagerPhoneNumber(rs.getString("managerphonenumber"));
-				
-				buildingTmp.setNumberOfBasement(rs.getInt("numberofbasement"));
-				buildingTmp.setRentPrice(rs.getInt("rentprice"));
-				result.add(buildingTmp);
-			}
-		} catch(SQLException e) {
-			e.printStackTrace();
-			System.out.println("failed");
-		}
-		return result;
+		String sql = this.getBuildingSearchQuery(buildingSearch);
+		Query query = entityManager.createNativeQuery(sql, BuildingEntity.class);
+		return query.getResultList();
 	}
-
+	
 	@Override
+	@Transactional
 	public void addBuilding(BuildingEntity buildingEntity) {
-		// TODO Auto-generated method stub
-		
+		entityManager.persist(buildingEntity);
+		System.out.println("Them toa nha thanh cong!");
 	}
 
 	@Override
 	public void deleteBuilding(Long id) {
 		// TODO Auto-generated method stub
-		
+		BuildingEntity buildingEntity = entityManager.find(BuildingEntity.class, id);
+		entityManager.remove(buildingEntity);
+		System.out.println("Da xoa toa nha thanh cong!");
 	}
-	
+
+
 }
